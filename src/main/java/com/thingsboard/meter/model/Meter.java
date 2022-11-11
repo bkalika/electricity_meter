@@ -3,7 +3,6 @@ package com.thingsboard.meter.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedBy;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -26,16 +25,12 @@ public class Meter implements Serializable {
             strategy = GenerationType.SEQUENCE,
             generator = "meter_sequence"
     )
-    @Column(
-            name = "id",
-            updatable = false
-    )
+    @Column(name = "id")
     private long id;
 
     @Column(
             name = "timestamp",
-            updatable = false,
-            columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+            updatable = false
     )
     @JsonFormat(
             shape = JsonFormat.Shape.STRING,
@@ -44,7 +39,6 @@ public class Meter implements Serializable {
     @CreationTimestamp
     private LocalDateTime timestamp;
 
-    @ColumnDefault("0")
     @Column(nullable = false)
     private double value;
 

@@ -50,5 +50,4 @@ public class MeterService implements IMeterService, Serializable {
         return BigDecimal.valueOf(meterList.get(meterList.size()-1).getValue() - meterList.get(0).getValue())
                 .setScale(2, RoundingMode.CEILING);
     }
-
 }
