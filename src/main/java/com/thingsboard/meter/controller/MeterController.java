@@ -3,7 +3,6 @@ package com.thingsboard.meter.controller;
 import com.thingsboard.meter.model.Meter;
 import com.thingsboard.meter.service.IMeterService;
 import com.thingsboard.meter.service.MeterService;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
