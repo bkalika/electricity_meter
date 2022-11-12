@@ -9,8 +9,12 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * @author @bkalika
@@ -30,15 +34,31 @@ public class MeterService implements IMeterService, Serializable {
     }
 
     @Override
+    public Map<Object, BigDecimal> sumValuesByHour(List<Meter> meters, LocalDateTime startDate, LocalDateTime endDate) {
+        Map<Object, List<Meter>> groupByHour = meters.stream().collect(
+                Collectors.groupingBy(time -> time.getTimestamp().truncatedTo(ChronoUnit.HOURS)));
+
+        Map<Object, BigDecimal> hoursRange = new TreeMap<>();
+        for(; !startDate.isAfter(endDate); startDate = startDate.truncatedTo(ChronoUnit.HOURS).plusHours(1)) {
+            hoursRange.put(startDate.truncatedTo(ChronoUnit.HOURS), BigDecimal.ZERO);
+        }
+
+        for (Map.Entry<Object, List<Meter>> entry : groupByHour.entrySet()) {
+            Object myKey = entry.getKey();
+            List<Meter> myList =  entry.getValue();
+            hoursRange.put(myKey,
+                    BigDecimal.valueOf(myList.get(myList.size()-1).getValue() - myList.get(0).getValue())
+                            .setScale(2, RoundingMode.CEILING));
+        }
+
+        return hoursRange;
+    }
+
+    @Override
     public List<Meter> findByTimestampBetween(LocalDateTime startDate, LocalDateTime endDate) {
         List<Meter> meterList = meterRepository.findByTimestampBetween(startDate, endDate);
         meterList.sort(Comparator.comparing(Meter::getId));
         return meterList;
-    }
-
-    @Override
-    public Meter create(Meter meter) {
-        return meterRepository.save(meter);
     }
 
     @Override
@@ -49,5 +69,10 @@ public class MeterService implements IMeterService, Serializable {
 
         return BigDecimal.valueOf(meterList.get(meterList.size()-1).getValue() - meterList.get(0).getValue())
                 .setScale(2, RoundingMode.CEILING);
+    }
+
+    @Override
+    public Meter create(Meter meter) {
+        return meterRepository.save(meter);
     }
 }

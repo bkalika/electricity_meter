@@ -1,7 +1,6 @@
 package com.thingsboard.meter.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -64,5 +63,14 @@ public class Meter implements Serializable {
 
     public void setValue(double value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "Meter{" +
+                "id=" + id +
+                ", timestamp=" + timestamp +
+                ", value=" + value +
+                '}';
     }
 }
