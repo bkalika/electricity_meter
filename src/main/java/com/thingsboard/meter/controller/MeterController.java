@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +68,7 @@ public class MeterController {
     }
 
     @GetMapping("/sum-two-meters")
-    public ResponseEntity<String> getValueSumByTimestampBetween(
+    public ResponseEntity<Map<String, BigDecimal>> getValueSumByTimestampBetween(
             @RequestParam(value="startDate", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                     LocalDateTime startDate,
@@ -77,10 +79,11 @@ public class MeterController {
 
         BigDecimal sum = meterService.getSumBetweenTwoTimestamp(
                 meterService.findByTimestampBetween(startDate, endDate));
-        JSONObject result = new JSONObject();
-        result.put("sum", sum);
 
-        return ResponseEntity.ok(result.toString());
+        Map<String, BigDecimal> response = new HashMap<>();
+        response.put("sum", sum);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping()
