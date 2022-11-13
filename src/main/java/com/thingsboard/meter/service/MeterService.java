@@ -1,7 +1,7 @@
 package com.thingsboard.meter.service;
 
 import com.thingsboard.meter.model.Meter;
-import com.thingsboard.meter.repository.MeterRepository;
+import com.thingsboard.meter.repository.IMeterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +21,10 @@ import java.util.stream.Collectors;
  */
 @Service
 public class MeterService implements IMeterService, Serializable {
-    private final MeterRepository meterRepository;
+    private final IMeterRepository meterRepository;
 
     @Autowired
-    public MeterService(MeterRepository meterRepository) {
+    public MeterService(IMeterRepository meterRepository) {
         this.meterRepository = meterRepository;
     }
 
@@ -34,17 +34,17 @@ public class MeterService implements IMeterService, Serializable {
     }
 
     @Override
-    public Map<Object, BigDecimal> sumValuesByHour(List<Meter> meters, LocalDateTime startDate, LocalDateTime endDate) {
-        Map<Object, List<Meter>> groupByHour = meters.stream().collect(
-                Collectors.groupingBy(time -> time.getTimestamp().truncatedTo(ChronoUnit.HOURS)));
+    public Map<String, BigDecimal> sumValuesByHour(List<Meter> meters, LocalDateTime startDate, LocalDateTime endDate) {
+        Map<String, List<Meter>> groupByHour = meters.stream().collect(
+                Collectors.groupingBy(time -> time.getTimestamp().truncatedTo(ChronoUnit.HOURS).toString()));
 
-        Map<Object, BigDecimal> hoursRange = new TreeMap<>();
+        Map<String, BigDecimal> hoursRange = new TreeMap<>();
         for(; !startDate.isAfter(endDate); startDate = startDate.truncatedTo(ChronoUnit.HOURS).plusHours(1)) {
-            hoursRange.put(startDate.truncatedTo(ChronoUnit.HOURS), BigDecimal.ZERO);
+            hoursRange.put(String.valueOf(startDate.truncatedTo(ChronoUnit.HOURS)), BigDecimal.ZERO);
         }
 
-        for (Map.Entry<Object, List<Meter>> entry : groupByHour.entrySet()) {
-            Object myKey = entry.getKey();
+        for (Map.Entry<String, List<Meter>> entry : groupByHour.entrySet()) {
+            String myKey = entry.getKey();
             List<Meter> myList =  entry.getValue();
             hoursRange.put(myKey,
                     BigDecimal.valueOf(myList.get(myList.size()-1).getValue() - myList.get(0).getValue())

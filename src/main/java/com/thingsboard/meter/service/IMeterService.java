@@ -17,5 +17,5 @@ public interface IMeterService {
     List<Meter> findByTimestampBetween(LocalDateTime startDate, LocalDateTime endDate);
     Meter create(Meter meter);
     BigDecimal getSumBetweenTwoTimestamp(List<Meter> meterList);
-    Map<Object, BigDecimal> sumValuesByHour(List<Meter> meters, LocalDateTime startDate, LocalDateTime endDate);
+    Map<String, BigDecimal> sumValuesByHour(List<Meter> meters, LocalDateTime startDate, LocalDateTime endDate);
 }

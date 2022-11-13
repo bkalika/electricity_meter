@@ -9,6 +9,6 @@ import java.util.List;
 /**
  * @author @bkalika
  */
-public interface MeterRepository extends JpaRepository<Meter, Long> {
+public interface IMeterRepository extends JpaRepository<Meter, Long> {
     List<Meter> findByTimestampBetween(LocalDateTime startDate, LocalDateTime endDate);
 }

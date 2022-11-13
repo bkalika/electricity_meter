@@ -29,7 +29,7 @@ public class MeterController {
     }
 
     @GetMapping("/group-by-hours")
-    public ResponseEntity<Map<Object, BigDecimal>> getMetersByHours(
+    public ResponseEntity<Map<String, BigDecimal>> getMetersByHours(
             @RequestParam(value="startDate")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                     LocalDateTime startDate,
@@ -40,7 +40,7 @@ public class MeterController {
 
         List<Meter> meters  = meterService.findByTimestampBetween(startDate, endDate);
 
-        Map<Object, BigDecimal> hoursRange = meterService.sumValuesByHour(meters, startDate, endDate);
+        Map<String, BigDecimal> hoursRange = meterService.sumValuesByHour(meters, startDate, endDate);
         return new ResponseEntity<>(hoursRange, HttpStatus.OK);
     }
 
